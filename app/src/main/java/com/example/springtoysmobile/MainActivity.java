@@ -3,6 +3,7 @@ package com.example.springtoysmobile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             Brinquedo brinquedoSelecionado = (Brinquedo) parent.getItemAtPosition(position);
             Toast.makeText(this, String.valueOf(brinquedoSelecionado.getCodBrinquedo()), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, EditarBrinquedo.class);
-            intent.putExtra("maratonaId", brinquedoSelecionado.getCodBrinquedo());
+            intent.putExtra("id", brinquedoSelecionado.getCodBrinquedo());
 
 
             startActivityForResult(intent, 1);
@@ -81,6 +82,13 @@ public class MainActivity extends AppCompatActivity {
         } else if (requestCode == 2 && resultCode == RESULT_OK) {
             carregarMaratonasAbertas();
         }
+    }
+
+    public void cadastrar(View view){
+        Intent intent = new Intent(MainActivity.this, CadastrarBrinquedo.class);
+
+
+        startActivityForResult(intent, 1);
     }
 
 }

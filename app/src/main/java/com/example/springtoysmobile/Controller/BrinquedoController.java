@@ -2,7 +2,11 @@ package com.example.springtoysmobile.Controller;
 
 import android.util.Log;
 
+import com.example.springtoysmobile.Service.DeleteRequest;
 import com.example.springtoysmobile.Service.FindAllRequest;
+import com.example.springtoysmobile.Service.FindByIdRequest;
+import com.example.springtoysmobile.Service.InsertRequest;
+import com.example.springtoysmobile.Service.UpdateRequest;
 import com.example.springtoysmobile.model.Brinquedo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -42,4 +46,77 @@ public class BrinquedoController {
         return brinquedos;
     }
 
+    public Brinquedo findById(String id) {
+        Brinquedo brinquedo = null;
+
+        try {
+            // Faz a solicitação para obter o JSON correspondente ao ID
+            FindByIdRequest findByIdRequest = new FindByIdRequest();
+            String jsonString = findByIdRequest.execute(id).get();
+
+            // Desserializa o JSON diretamente para um objeto Brinquedo
+            ObjectMapper objectMapper = new ObjectMapper();
+            brinquedo = objectMapper.readValue(jsonString, Brinquedo.class);
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return brinquedo;
+    }
+    public int insert(Brinquedo brinquedo){
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String jsonUser = objectMapper.writeValueAsString(brinquedo);
+
+            InsertRequest insertRequest = new InsertRequest();
+            String jsonString = insertRequest.execute(jsonUser).get();
+
+            Map<String, Object> map = objectMapper.readValue(jsonString, Map.class);
+            brinquedo = objectMapper.readValue(jsonString, Brinquedo.class);
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return brinquedo.getCodBrinquedo();
+    }
+    public void update(String id, Brinquedo brinquedo){
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String jsonUser = objectMapper.writeValueAsString(brinquedo);
+
+            UpdateRequest updateRequest = new UpdateRequest();
+            updateRequest.execute(id, jsonUser).get();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void deleteById(String id){
+        try {
+            DeleteRequest deleteRequest = new DeleteRequest();
+            deleteRequest.execute(id).get();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
